@@ -1,0 +1,3 @@
+USE pubs;
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
+SELECT au_id, au_fname, phone FROM authors;
