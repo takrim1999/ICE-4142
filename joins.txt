@@ -1,0 +1,40 @@
+13. Joins
+
+Joins are used to combine data from two or more tables based on a related column between them. Here are the common types of joins in T-SQL:
+
+INNER JOIN: Returns rows only when there is a match in both tables.
+SQL
+
+SELECT e.FirstName, e.LastName, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID;
+LEFT JOIN (or LEFT OUTER JOIN): Returns all rows from the left table (the one specified before LEFT JOIN), and the matching rows from the right table. If there is no match on the right table, it returns NULL values for the right table columns.
+SQL
+
+SELECT c.CustomerID, c.CustomerName, o.OrderID
+FROM Customers c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID;
+RIGHT JOIN (or RIGHT OUTER JOIN): Returns all rows from the right table (the one specified after RIGHT JOIN), and the matching rows from the left table. If there is no match on the left table, it returns NULL values for the left table columns.
+SQL
+
+SELECT o.OrderID, c.CustomerName
+FROM Orders o
+RIGHT JOIN Customers c ON o.CustomerID = c.CustomerID;
+FULL OUTER JOIN: Returns all rows from both tables. If there is no match on one side, it returns NULL values for the corresponding columns.
+SQL
+
+SELECT c.CustomerName, o.OrderID
+FROM Customers c
+FULL OUTER JOIN Orders o ON c.CustomerID = o.CustomerID;
+CROSS JOIN: Returns the Cartesian product of both tables (all possible combinations of rows).
+SQL
+
+SELECT c.CustomerName, p.ProductName
+FROM Customers c
+CROSS JOIN Products p;
+Important Considerations:
+
+JOIN conditions: Use the ON clause to specify the condition for joining the tables (e.g., ON e.DepartmentID = d.DepartmentID).
+Table aliases: Use aliases (e.g., e for Employees, d for Departments) to make the query more concise and readable.
+Multiple joins: You can join multiple tables in a single query by chaining joins together.
+By understanding and applying different types of joins, you can effectively retrieve and combine data from multiple tables in your database.

@@ -1,0 +1,132 @@
+CREATE DATABASE:
+SQL
+
+CREATE DATABASE MyDatabase;
+CREATE TABLE:
+SQL
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Salary DECIMAL(10,2)
+);
+ALTER TABLE:
+SQL
+
+ALTER TABLE Employees
+ADD Department VARCHAR(50);
+DROP TABLE:
+SQL
+
+DROP TABLE Employees;
+3. Data Manipulation Language (DML)
+
+INSERT:
+SQL
+
+INSERT INTO Employees (EmployeeID, FirstName, LastName, Salary)
+VALUES (1, 'John', 'Doe', 60000);
+UPDATE:
+SQL
+
+UPDATE Employees
+SET Salary = 65000
+WHERE EmployeeID = 1;
+DELETE:
+SQL
+
+DELETE FROM Employees
+WHERE EmployeeID = 1;
+SELECT:
+SQL
+
+SELECT FirstName, LastName
+FROM Employees;
+4. Data Control Language (DCL)
+
+GRANT:
+SQL
+
+GRANT SELECT ON Employees TO User1;
+REVOKE:
+SQL
+
+REVOKE SELECT ON Employees FROM User1;
+5. Operators
+
+Arithmetic Operators: +, -, *, /, %
+Comparison Operators: =, !=, >, <, >=, <=
+Logical Operators: AND, OR, NOT
+6. Clauses
+
+WHERE:
+SQL
+
+SELECT * FROM Employees WHERE Salary > 50000;
+ORDER BY:
+SQL
+
+SELECT * FROM Employees ORDER BY LastName ASC;
+GROUP BY:
+SQL
+
+SELECT Department, AVG(Salary) FROM Employees GROUP BY Department;
+HAVING:
+SQL
+
+SELECT Department, AVG(Salary) FROM Employees GROUP BY Department HAVING AVG(Salary) > 60000;
+7. Functions
+
+Aggregate Functions: AVG(), SUM(), COUNT(), MAX(), MIN()
+String Functions: LEN(), SUBSTRING(), UPPER(), LOWER()
+Date Functions: GETDATE(), DATEADD(), DATEDIFF()
+8. Stored Procedures
+
+SQL
+
+CREATE PROCEDURE GetEmployeesByDepartment
+    @Department VARCHAR(50)
+AS
+BEGIN
+    SELECT * FROM Employees WHERE Department = @Department;
+END;
+9. Triggers
+
+SQL
+
+CREATE TRIGGER UpdateSalaryTrigger
+ON Employees
+AFTER UPDATE
+AS
+BEGIN
+    IF UPDATE(Salary)
+    BEGIN
+        -- Perform actions after salary update
+    END;
+END;
+10. Views
+
+SQL
+
+CREATE VIEW HighSalaryEmployees AS
+SELECT FirstName, LastName, Salary
+FROM Employees
+WHERE Salary > 70000;
+11. Error Handling
+
+SQL
+
+BEGIN TRY
+    -- Code that might cause an error
+END TRY
+BEGIN CATCH
+    -- Code to handle the error
+END CATCH;
+12. Transactions
+
+SQL
+
+BEGIN TRANSACTION;
+    -- SQL statements
+COMMIT TRANSACTION;

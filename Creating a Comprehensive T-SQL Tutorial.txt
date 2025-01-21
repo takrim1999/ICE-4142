@@ -1,0 +1,550 @@
+﻿T-SQL Tutorial: A Comprehensive Guide with Examples
+This T-SQL tutorial is designed for both beginners and experienced developers who want to learn how to interact with Microsoft SQL Server databases. To create this comprehensive guide, we first identified existing T-SQL tutorials and the official Microsoft documentation. Then, we compiled a list of common T-SQL commands and concepts, creating clear examples for each. Finally, we organized the tutorial into logical sections, starting with basic concepts and progressing to more advanced topics.
+T-SQL (Transact-SQL) is Microsoft's proprietary extension to the SQL (Structured Query Language) used for managing and manipulating data in SQL Server databases. This tutorial will cover a wide range of T-SQL commands and concepts, from basic data retrieval to more advanced topics like stored procedures, triggers, and dynamic SQL. Each concept is explained with clear and concise examples to help you understand and apply T-SQL effectively.
+Basic Concepts
+Data Retrieval with SELECT
+The SELECT statement is the foundation of data retrieval in SQL. It allows you to retrieve specific data from one or more tables in a database.
+Syntax:
+
+
+SQL
+
+
+
+
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+
+Example:
+
+
+SQL
+
+
+
+
+SELECT FirstName, LastName
+FROM Employees
+WHERE DepartmentID = 10;
+
+This query retrieves the FirstName and LastName of all employees in the Employees table who belong to department number 10.
+Data Modification with INSERT, UPDATE, and DELETE
+T-SQL provides commands for modifying data within database tables.
+* INSERT: Adds new data into a table.
+Syntax:
+
+
+SQL
+
+
+
+
+INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...);
+
+Example:
+
+
+SQL
+
+
+
+
+INSERT INTO Products (ProductName, Price)
+VALUES ('Laptop', 1200);
+
+This statement inserts a new product named "Laptop" with a price of 1200 into the Products table.
+* UPDATE: Modifies existing data in a table.
+Syntax:
+
+
+SQL
+
+
+
+
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+
+Example:
+
+
+SQL
+
+
+
+
+UPDATE Employees
+SET Salary = 60000
+WHERE EmployeeID = 1;
+
+This command updates the salary of the employee with EmployeeID 1 to 60000.
+* DELETE: Removes data from a table.
+Syntax:
+
+
+SQL
+
+
+
+
+DELETE FROM table_name
+WHERE condition;
+
+Example:
+
+
+SQL
+
+
+
+
+DELETE FROM Orders
+WHERE OrderID = 101;
+
+This query deletes the order with OrderID 101 from the Orders table.
+Defining Tables with CREATE TABLE and Removing Them with DROP TABLE
+* CREATE TABLE: Creates a new table in the database.
+Syntax:
+
+
+SQL
+
+
+
+
+CREATE TABLE table_name (
+   column1 datatype,
+   column2 datatype,
+   ...
+);
+
+Example:
+
+
+SQL
+
+
+
+
+CREATE TABLE Customers (
+   CustomerID INT PRIMARY KEY,
+   FirstName VARCHAR(50),
+   LastName VARCHAR(50),
+   City VARCHAR(50)
+);
+
+This code creates a new table named Customers with columns for CustomerID, FirstName, LastName, and City.
+* DROP TABLE: Removes a table from the database.
+Syntax:
+
+
+SQL
+
+
+
+
+DROP TABLE table_name;
+
+Example:
+
+
+SQL
+
+
+
+
+DROP TABLE Customers;
+
+This statement deletes the Customers table.
+Data Types
+T-SQL offers a variety of data types to store different kinds of information in your database tables. These data types are categorized into several groups: 1
+* String Data Types: Used to store textual data. Examples include CHAR, VARCHAR, TEXT, NCHAR, NVARCHAR, and NTEXT.
+* Numeric Data Types: Used for storing numbers. Examples include INT, BIGINT, SMALLINT, TINYINT, DECIMAL, NUMERIC, FLOAT, and REAL.
+* Date and Time Data Types: Used for storing dates and times. Examples include DATE, TIME, DATETIME, DATETIME2, SMALLDATETIME, and DATETIMEOFFSET.
+* Binary Data Types: Used to store binary data such as images or documents. Examples include BINARY, VARBINARY, and IMAGE.
+* Other Data Types: T-SQL also includes other specialized data types like UNIQUEIDENTIFIER, XML, CURSOR, and TABLE.
+Advanced Concepts
+Stored Procedures
+Stored procedures are pre-compiled groups of T-SQL statements stored in the database. They can accept input parameters and return output values, making them efficient for repetitive tasks2. For example, imagine an online store that needs to process thousands of orders daily. A stored procedure can be created to automate the order processing steps, such as updating inventory, calculating taxes, and generating invoices. This improves efficiency and reduces code duplication.
+Example:
+
+
+SQL
+
+
+
+
+CREATE PROCEDURE GetEmployeesByDepartment
+   @DepartmentID INT
+AS
+BEGIN
+   SELECT EmployeeName
+   FROM Employees
+   WHERE DepartmentID = @DepartmentID;
+END;
+
+This stored procedure, named GetEmployeesByDepartment, takes a DepartmentID as input and returns the names of employees in that department. To execute it:
+
+
+SQL
+
+
+
+
+EXEC GetEmployeesInDepartment @DepartmentID = 101;
+
+Triggers
+Triggers are special stored procedures that automatically execute when a specific event occurs in the database. These events can include data modification events (INSERT, UPDATE, or DELETE) on a table, data definition language (DDL) events like CREATE, ALTER, and DROP, and logon events3. For instance, a trigger can be used to automatically update a timestamp field whenever a row in a table is modified, ensuring data integrity and providing an audit trail.
+Example:
+
+
+SQL
+
+
+
+
+CREATE TRIGGER trgEmployeeUpdate
+ON dbo.Employee
+AFTER UPDATE
+AS
+INSERT INTO dbo.EmpLog(EmpID, Operation, UpdatedDate)
+SELECT EmployeeID, 'UPDATE', GETDATE()
+FROM DELETED;
+
+This trigger, trgEmployeeUpdate, inserts a log entry into the EmpLog table whenever an employee record is updated in the Employee table.
+Functions
+Functions are routines that accept input parameters and return a single value or a result set4. T-SQL supports different types of functions: 1
+* Scalar Functions: These functions take one or more parameters and return a single value. For example, a function to calculate the discount price of a product.
+* Aggregate Functions: These functions operate on a set of values and return a single value. Common examples include SUM, AVG, COUNT, MIN, and MAX.
+* Table-Valued Functions: These functions return a table as a result set. They can be used in place of a table in a FROM clause.
+Example:
+
+
+SQL
+
+
+
+
+CREATE FUNCTION dbo.CalculateAge (@BirthDate DATE)
+RETURNS INT
+AS
+BEGIN
+   DECLARE @Age INT;
+   SELECT @Age = DATEDIFF(year, @BirthDate, GETDATE());
+   RETURN @Age;
+END;
+
+This function, CalculateAge, calculates the age of a person based on their birth date.
+Views
+Views are virtual tables based on the result set of a SQL statement. They provide a customized view of the data without storing it separately5. For example, a company might have a large Employees table with sensitive information like salaries. A view can be created to show only the employee names and departments, restricting access to confidential data.
+Example:
+
+
+SQL
+
+
+
+
+CREATE VIEW ActiveCustomers AS
+SELECT CustomerID, FirstName, LastName
+FROM Customers
+WHERE Active = 1;
+
+This view, ActiveCustomers, shows only the active customers from the Customers table.
+Cursors
+Cursors allow you to process data in a result set one row at a time6. While cursors offer flexibility, they can have a significant performance overhead compared to set-based operations7. Therefore, it's generally recommended to use set-based approaches whenever possible and reserve cursors for situations where row-by-row processing is essential.
+Example:
+
+
+SQL
+
+
+
+
+DECLARE @CustomerID INT;
+DECLARE customer_cursor CURSOR FOR
+SELECT CustomerID FROM Customers;
+
+OPEN customer_cursor;
+
+FETCH NEXT FROM customer_cursor INTO @CustomerID;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+   -- Perform actions with @CustomerID
+   FETCH NEXT FROM customer_cursor INTO @CustomerID;
+END;
+
+CLOSE customer_cursor;
+DEALLOCATE customer_cursor;
+
+This code iterates through each CustomerID in the Customers table using a cursor.
+Dynamic SQL
+Dynamic SQL allows you to construct and execute SQL statements at runtime8. This can be useful for building flexible queries where the table or column names are not known in advance. However, it's crucial to use parameterized dynamic SQL to prevent SQL injection vulnerabilities9. Parameterized queries help protect your database from malicious attacks by treating user inputs as data rather than executable code.
+Example:
+
+
+SQL
+
+
+
+
+DECLARE @sql nvarchar(max);
+DECLARE @TableName nvarchar(50);
+SET @TableName = 'Customers';
+SET @sql = N'SELECT * FROM ' + QUOTENAME(@TableName);
+EXEC sp_executesql @sql;
+
+This code dynamically builds a SELECT statement to retrieve data from the table specified in the @TableName variable.
+Transactions
+Transactions ensure that a set of database operations are treated as a single unit of work. All operations within a transaction either succeed or fail together10. This is essential for maintaining data consistency and integrity, especially in scenarios involving multiple related operations. For example, when transferring money between bank accounts, a transaction ensures that both the debit and credit operations are completed successfully or both are rolled back in case of an error.
+Example:
+
+
+SQL
+
+
+
+
+BEGIN TRANSACTION;
+UPDATE Accounts SET Balance = Balance - 100 WHERE AccountID = 1;
+UPDATE Accounts SET Balance = Balance + 100 WHERE AccountID = 2;
+COMMIT TRANSACTION;
+
+This code transfers 100 from account 1 to account 2 within a transaction. If either UPDATE statement fails, the entire transaction is rolled back.
+Error Handling
+T-SQL provides TRY...CATCH blocks for handling errors in your code11. This allows you to gracefully handle unexpected situations and prevent your application from crashing. Within the CATCH block, you can log the error, display a user-friendly message, or attempt to recover from the error.
+Example:
+
+
+SQL
+
+
+
+
+BEGIN TRY
+   -- Code that might cause an error
+   SELECT 1/0;
+END TRY
+BEGIN CATCH
+   SELECT 
+       ERROR_NUMBER() AS ErrorNumber,
+       ERROR_MESSAGE() AS ErrorMessage;
+END CATCH;
+
+This code catches the divide-by-zero error and displays the error number and message.
+Conclusion
+
+More:
+
+# T-SQL Comprehensive Tutorial
+
+Transact-SQL (T-SQL) is Microsoft's proprietary extension to SQL (Structured Query Language) used to interact with relational databases. This tutorial covers the basics to advanced topics with examples to provide a complete understanding of T-SQL.
+
+---
+
+## 1. **Introduction to T-SQL**
+T-SQL extends SQL by adding procedural programming constructs, local variables, error handling, and more.
+
+### Example
+```sql
+SELECT 'Hello, T-SQL!';
+```
+---
+
+## 2. **T-SQL Basics**
+
+### 2.1 SELECT Statements
+Used to retrieve data from a database.
+```sql
+SELECT * FROM Employees;
+SELECT Name, Age FROM Employees WHERE Age > 30;
+```
+
+### 2.2 INSERT Statements
+Used to insert data into a table.
+```sql
+INSERT INTO Employees (Name, Age, Department)
+VALUES ('John Doe', 29, 'HR');
+```
+
+### 2.3 UPDATE Statements
+Modify existing records in a table.
+```sql
+UPDATE Employees
+SET Age = 30
+WHERE Name = 'John Doe';
+```
+
+### 2.4 DELETE Statements
+Remove records from a table.
+```sql
+DELETE FROM Employees
+WHERE Name = 'John Doe';
+```
+---
+
+## 3. **Data Types in T-SQL**
+### Common Data Types
+- `INT`: Integer
+- `VARCHAR(n)`: Variable-length string
+- `DATE`: Date
+- `DECIMAL(p, s)`: Fixed-point number
+- `BIT`: Boolean
+
+### Example
+```sql
+CREATE TABLE SampleTable (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Salary DECIMAL(10, 2),
+    IsActive BIT
+);
+```
+---
+
+## 4. **Advanced T-SQL Features**
+
+### 4.1 Stored Procedures
+Reusable SQL code encapsulated as a stored procedure.
+```sql
+CREATE PROCEDURE GetEmployeesByAge
+    @Age INT
+AS
+BEGIN
+    SELECT * FROM Employees WHERE Age > @Age;
+END;
+
+EXEC GetEmployeesByAge 30;
+```
+
+### 4.2 Functions
+Custom functions that return values.
+```sql
+CREATE FUNCTION CalculateBonus(@Salary DECIMAL)
+RETURNS DECIMAL
+AS
+BEGIN
+    RETURN @Salary * 0.10;
+END;
+
+SELECT dbo.CalculateBonus(5000);
+```
+
+### 4.3 Transactions
+Ensure data integrity by grouping SQL commands.
+```sql
+BEGIN TRANSACTION;
+UPDATE Employees SET Salary = Salary + 1000 WHERE Department = 'IT';
+COMMIT;
+```
+
+### 4.4 Error Handling
+Using `TRY...CATCH` for error handling.
+```sql
+BEGIN TRY
+    INSERT INTO Employees (Name, Age) VALUES ('Jane', NULL);
+END TRY
+BEGIN CATCH
+    PRINT ERROR_MESSAGE();
+END CATCH;
+```
+---
+
+## 5. **Working with Joins**
+
+### 5.1 Inner Join
+```sql
+SELECT e.Name, d.DepartmentName
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.ID;
+```
+
+### 5.2 Left Join
+```sql
+SELECT e.Name, d.DepartmentName
+FROM Employees e
+LEFT JOIN Departments d ON e.DepartmentID = d.ID;
+```
+
+### 5.3 Cross Join
+```sql
+SELECT *
+FROM Employees
+CROSS JOIN Departments;
+```
+---
+
+## 6. **Common Table Expressions (CTEs)**
+Simplify complex queries by creating temporary result sets.
+```sql
+WITH CTE_Employees AS (
+    SELECT Name, Salary FROM Employees WHERE Salary > 50000
+)
+SELECT * FROM CTE_Employees;
+```
+---
+
+## 7. **Window Functions**
+Perform calculations across a set of table rows.
+```sql
+SELECT Name, Salary, RANK() OVER (ORDER BY Salary DESC) AS Rank
+FROM Employees;
+```
+---
+
+## 8. **Indexes**
+
+### 8.1 Creating Indexes
+```sql
+CREATE INDEX idx_DepartmentID ON Employees(DepartmentID);
+```
+
+### 8.2 Dropping Indexes
+```sql
+DROP INDEX idx_DepartmentID ON Employees;
+```
+---
+
+## 9. **Triggers**
+Automatically execute SQL code in response to certain events.
+```sql
+CREATE TRIGGER trg_AfterInsert ON Employees
+AFTER INSERT
+AS
+BEGIN
+    PRINT 'A new employee has been added.';
+END;
+```
+---
+
+## 10. **Dynamic SQL**
+Execute SQL dynamically.
+```sql
+DECLARE @sql NVARCHAR(MAX);
+SET @sql = 'SELECT * FROM Employees WHERE Age > ' + CAST(30 AS NVARCHAR);
+EXEC sp_executesql @sql;
+```
+---
+
+## 11. **Performance Optimization**
+
+### 11.1 Query Execution Plan
+Analyze performance using query plans.
+```sql
+SET STATISTICS IO ON;
+SELECT * FROM Employees;
+SET STATISTICS IO OFF;
+```
+
+### 11.2 Using Indexes
+Optimize read operations by creating appropriate indexes.
+
+---
+
+## Conclusion
+T-SQL is a powerful extension of SQL, and this tutorial provides a foundation for working with databases efficiently. By mastering the basics and advanced features, you can harness the full potential of Microsoft SQL Server.
+
